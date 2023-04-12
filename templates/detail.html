@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Zip code: {{ zipcode }}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" crossorigin="anonymous">
+    <script src="https://cdn.anychart.com/releases/8.7.1/js/anychart-core.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/8.7.1/js/anychart-heatmap.min.js"></script>
+  </head>
+  <body>
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="/">Zip Codes</a>
+      </nav>
+      <div class="jumbotron">
+        <div class="container">
+          <h1 class="display-4">{{ zipcode }}</h1>
+          <p class="lead">This zip code has {{ notices_count }} records and {{ total_notices }} total notices.</p>
+        </div>
+      </div>
+      <div id="container"></div>
+      <script>
+        anychart.onDocumentReady(function () {
+            var data = {{ notice_json|tojson }};
+            chart = anychart.heatMap(data);
+            chart.title("Monthly Foreclosure Notices");
+            var customColorScale = anychart.scales.linearColor();
+            customColorScale.colors(["#ACE8D4", "#00726A"]);
+            chart.colorScale(customColorScale);
+            chart.container("container");
+            chart.draw();
+        });
+    </script>
+    </div>
+  </body>
+</html>

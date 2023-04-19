@@ -43,11 +43,11 @@ def detail(slug):
     zipcode = ZipCode.get(ZipCode.zipcode==slug)
     notices = Notice.select().where(Notice.zip==slug)
     total_notices = Notice.select(fn.SUM(Notice.notices).alias('sum')).where(Notice.zip==slug).scalar()
-    geojson_url = f"/static/zipcode_slug{slug}.geojson"
+    geojson_url = f"/static/zipcode_{slug}.geojson"
     notice_json = []
     for notice in notices:
         notice_json.append({'x': str(notice.month.year) + ' ' + str(notice.month.month), 'y': notice.zip, 'heat': notice.notices})
-    return render_template("detail.html", zipcode=zipcode, notices=notices, notices_count=len(notices), notice_json = notice_json, total_notices = total_notices)
+    return render_template("detail.html", zipcode=zipcode, notices=notices, notices_count=len(notices), notice_json = notice_json, total_notices = total_notices, geojson_url=geojson_url)
 
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=True)

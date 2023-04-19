@@ -21,7 +21,7 @@
               <div class="container">
                 <div id='map' style='width: 600px; height: 400px;'></div>
                 <script>
-                mapboxgl.accessToken = 'pk.eyJ1IjoiZHB3aWxsaXMtdW1kIiwiYSI6ImNsZ2RxamJ0eDFxM3EzZm93cnFna2RkdWoifQ.5svZJaACUgtks1IQnBOUkQ';
+                mapboxgl.accessToken = 'pk.eyJ1IjoiZHB3aWxsaXMtdW1kIiwiYSI6ImNsZ2RxZ2dyZjBtemIzbHM5ZmdlMjd6dXMifQ.dJrsyQA_FrLSwNTE1t1Yiw';
                 var map = new mapboxgl.Map({
                   container: 'map',
                   style: 'mapbox://styles/mapbox/streets-v9',
@@ -34,6 +34,7 @@
                 .then((data) => {
                   // Calculate the centroid of the MultiPolygon and set the map center
                   const centroid = turf.center(data);
+                  console.log(centroid);
                   map.setCenter(centroid.geometry.coordinates);
                   map.on('load', function () {
                   map.addSource('geojson', {

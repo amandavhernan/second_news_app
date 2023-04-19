@@ -18,7 +18,7 @@ class ZipCode(Model):
         database = db
 
 # create that table if it doesn't already exist
-db.create_tables([ZipCode], safe=True)
+db.create_tables([ZipCode])
 
 # create a container to put my data in
 rows_to_insert = []

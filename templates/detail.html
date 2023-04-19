@@ -1,34 +1,73 @@
 <!doctype html>
-<html>
-  <head>
-    <title>Zip code: {{ zipcode }}</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" crossorigin="anonymous">
-    <script src="https://cdn.anychart.com/releases/8.7.1/js/anychart-core.min.js"></script>
-    <script src="https://cdn.anychart.com/releases/8.7.1/js/anychart-heatmap.min.js"></script>
-  </head>
-  <body>
-      <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="/">Maryland Foreclosure Notices by Zip Code</a>
-      </nav>
-      <div class="jumbotron">
-        <div class="container">
-          <h1 class="display-4">{{ zipcode }}</h1>
-          <p class="lead">This zip code has {{ notices_count }} records and {{ total_notices }} total notices. There are {{ "{:,}".format(zipcode.owner_occupied) }} owner-occupied housing units in this zip code, according to the Census Bureau's American Community Survey.</p>
+    <html>
+      <head>
+        <title>Zip code: {{ zipcode }}</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" crossorigin="anonymous">
+        <script src="https://cdn.anychart.com/releases/8.7.1/js/anychart-core.min.js"></script>
+        <script src="https://cdn.anychart.com/releases/8.7.1/js/anychart-heatmap.min.js"></script>
+        <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js'></script>
+        <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css' rel='stylesheet' />
+        <script src='https://cdnjs.cloudflare.com/ajax/libs/Turf.js/6.5.0/turf.min.js'></script>
+      </head>
+      <body>
+          <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <a class="navbar-brand" href="/">Maryland Foreclosure Notices by Zip Code</a>
+          </nav>
+          <div class="jumbotron">
+            <div class="container">
+              <h1 class="display-4">{{ zipcode.zipcode }}</h1>
+              <p class="lead">This zip code has {{ notices_count }} records and {{ total_notices }} total notices. There are {{ "{:,}".format(zipcode.owner_occupied) }} owner-occupied housing units in this zip code, according to the Census Bureau's American Community Survey.</p>
+
+              <div class="container">
+                <div id='map' style='width: 600px; height: 400px;'></div>
+                <script>
+                mapboxgl.accessToken = 'pk.eyJ1IjoiZHB3aWxsaXMtdW1kIiwiYSI6ImNsZ2RxamJ0eDFxM3EzZm93cnFna2RkdWoifQ.5svZJaACUgtks1IQnBOUkQ';
+                var map = new mapboxgl.Map({
+                  container: 'map',
+                  style: 'mapbox://styles/mapbox/streets-v9',
+                  zoom: 11
+                });
+                map.addControl(new mapboxgl.NavigationControl());
+                const geojsonUrl = '{{ geojson_url }}';
+                fetch(geojsonUrl)
+                .then((response) => response.json())
+                .then((data) => {
+                  // Calculate the centroid of the MultiPolygon and set the map center
+                  const centroid = turf.center(data);
+                  map.setCenter(centroid.geometry.coordinates);
+                  map.on('load', function () {
+                  map.addSource('geojson', {
+                      type: 'geojson',
+                      data: geojsonUrl
+                  });
+                  map.addLayer({
+                      id: 'geojson',
+                      type: 'fill', 
+                      source: 'geojson',
+                      paint: {
+                        'fill-color': '#0080ff', // blue color fill
+                        'fill-opacity': 0.5
+                        }
+                      });
+                  });
+                });
+                </script>
+              </div>
+            </div>
+          </div>
+          <div id="container"></div>
+          <script>
+            anychart.onDocumentReady(function () {
+                var data = {{ notice_json|tojson }};
+                chart = anychart.heatMap(data);
+                chart.title("Monthly Foreclosure Notices");
+                var customColorScale = anychart.scales.linearColor();
+                customColorScale.colors(["#ACE8D4", "#00726A"]);
+                chart.colorScale(customColorScale);
+                chart.container("container");
+                chart.draw();
+            });
+          </script>
         </div>
-      </div>
-      <div id="container"></div>
-      <script>
-        anychart.onDocumentReady(function () {
-            var data = {{ notice_json|tojson }};
-            chart = anychart.heatMap(data);
-            chart.title("Monthly Foreclosure Notices");
-            var customColorScale = anychart.scales.linearColor();
-            customColorScale.colors(["#ACE8D4", "#00726A"]);
-            chart.colorScale(customColorScale);
-            chart.container("container");
-            chart.draw();
-        });
-      </script>
-    </div>
-  </body>
-</html>
+      </body>
+    </html>

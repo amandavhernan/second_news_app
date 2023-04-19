@@ -13,19 +13,18 @@
             <p>There are {{ count }} records in the database.</p>
             <h3>Zip Codes</h3>
             <div class="row">
-                <div class="col-md-4">
-                <ul class="list-unstyled">
-                    {% for zip in all_zips %}
-                        <li><a href="/zipcode/{{ zip.zipcode }}">{{ zip.zipcode }}</a></li>
-                        {% if loop.index % 3 == 0 and not loop.last %}
-                        </ul>
-                            </div>
-                            <div class="col-md-4">
-                                <ul class="list-unstyled">
-                            {% endif %}
-                        {% endfor %}
+            <div class="col-md-4">
+            <ul class="list-unstyled">
+                {% for zip in all_zips %}
+                    <li><a href="/zipcode/{{ zip.zipcode }}">{{ zip.zipcode }}</a></li>
+                    {% if loop.index % 3 == 0 and not loop.last %}
                     </ul>
-                </div>
+                        </div>
+                        <div class="col-md-4">
+                            <ul class="list-unstyled">
+                        {% endif %}
+                    {% endfor %}
+                </ul>
             </div>
         </div>
     </div>

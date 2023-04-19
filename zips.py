@@ -3,7 +3,7 @@ from peewee import *
 from census import Census
 from app import *
 db = SqliteDatabase('foreclosures.db')
-census_api_key = os.environ.get('CENSUS_API_KEY')
+census_api_key = os.environ.get('09ab3b0e03c1394c8a2b4459460427ab6f0a1c59')
 c = Census(census_api_key)
 
 # get all the zips from the Notices

@@ -1,9 +1,8 @@
 import os
-from flask import Flask
-from flask import render_template
 from peewee import *
 from census import Census
-
+from flask import Flask
+from flask import render_template
 app = Flask(__name__)
 db = SqliteDatabase('foreclosures.db')
 census_api_key = os.environ.get('09ab3b0e03c1394c8a2b4459460427ab6f0a1c59')
